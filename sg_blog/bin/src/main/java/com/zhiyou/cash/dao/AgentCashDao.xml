@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.cash.dao.AgentCashDao">
+	<insert id="insertCashApply" parameterType="com.zhiyou.cash.dto.ApplyCashDto">
+	<![CDATA[
+	 insert into apply_cash(
+	    orderId,
+		appid,
+		guid,
+		totalFee,
+		state,
+		remark,
+		applyTime
+		)values(
+			#{orderId},
+			#{appid},
+			#{guid},
+			#{totalFee},
+			#{state},
+			#{remark},
+			#{applyTime}
+		);
+	]]>
+	</insert>
+	
+	<update id="updateCashApplyState" parameterType="com.zhiyou.cash.dto.ApplyCashDto" >
+	 <![CDATA[ 
+    update apply_cash set state=#{state},updateTime=#{updateTime},remark=#{remark} where orderId=#{orderId}
+		]]>
+	</update>
+	
+	<select id="count" parameterType="map" resultType="int">
+	 <![CDATA[ select count(*) from apply_cash ]]>
+			<where>
+			    <if test="orderId != null and orderId !='' ">and orderId = #{orderId} </if>
+			    <if test="appid != null and appid != 0 ">and appid = #{appid} </if>
+			    <if test="guid != null and guid != '' ">and guid = #{guid} </if>
+				<if test="startTime != null and startTime != '' ">
+					<![CDATA[and DATE(applyTime) >= #{startTime}]]>
+				</if>
+				<if test="endTime != null and endTime != '' ">
+					<![CDATA[and DATE(applyTime) <= #{endTime}]]>
+				</if>
+			</where>
+	</select>
+	
+		<select id="findForPage" parameterType="map" resultType="com.zhiyou.cash.dto.ApplyCashDto">
+	         <![CDATA[ select * from apply_cash ]]>
+			<where>
+			     <if test="orderId != null and orderId !='' ">and orderId = #{orderId} </if>
+			    <if test="appid != null and appid != 0 ">and appid = #{appid} </if>
+			    <if test="guid != null and guid != '' ">and guid = #{guid} </if>
+				<if test="startTime != null and startTime != '' ">
+					<![CDATA[and DATE(applyTime) >= #{startTime}]]>
+				</if>
+				<if test="endTime != null and endTime != '' ">
+					<![CDATA[and DATE(applyTime) <= #{endTime}]]>
+				</if>
+			</where>
+			<![CDATA[ORDER BY applyTime DESC]]>
+			<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+	<select id="getApplyCashDtoByOrderID" parameterType="String" resultType="com.zhiyou.cash.dto.ApplyCashDto" >
+	<![CDATA[
+		select * from apply_cash where orderId=#{orderId};
+	   ]]>
+	</select>
+	
+	<select id="getCashApplyDto" parameterType="map" resultType="com.zhiyou.cash.dto.ApplyCashDto">
+		<![CDATA[
+		select * from apply_cash where appid=#{appid} and guid=#{guid} order by applyTime desc
+	   ]]>
+	</select>
+	
+</mapper>

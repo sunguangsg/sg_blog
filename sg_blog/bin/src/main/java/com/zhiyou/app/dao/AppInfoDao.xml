@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.app.dao.AppInfoDao">
+	<insert id="insert" parameterType="com.zhiyou.app.dto.AppInfoDto" useGeneratedKeys="true" keyProperty="appid">
+	<![CDATA[
+	 INSERT INTO appinfo(
+		appname,
+		appkey,
+		createTime,
+		updateTime
+		)VALUES(
+			#{appname},
+			#{appkey},
+			#{createTime},
+			#{updateTime}
+		);
+	]]>
+	</insert>
+	<delete id="delete" parameterType="com.zhiyou.app.dto.AppInfoDto">
+		<![CDATA[
+			DELETE FROM appinfo
+			WHERE appid = #{appid};
+		]]>
+	</delete>
+	<update id="update" parameterType="com.zhiyou.app.dto.AppInfoDto">
+		<![CDATA[
+				UPDATE appinfo
+			SET 
+				 appname= #{appname},
+				updateTime = #{updateTime}
+					WHERE
+				appid = #{appid};
+		]]>
+	</update>
+	<select id="getAppId" parameterType="int" resultType="com.zhiyou.app.dto.AppInfoDto" >
+		<![CDATA[
+		SELECT
+			appid,
+			appname,
+			appkey,
+			createTime,
+			updateTime 
+	   FROM appinfo
+      WHERE appid = #{appid};
+		]]>
+	</select>
+	
+	<select id="findForPage" parameterType="map" resultType="com.zhiyou.app.dto.AppInfoDto">
+		<![CDATA[
+		 SELECT * FROM  appinfo
+		]]>
+	    <where>
+			<if test="appid != null and appid != 0">
+			     <![CDATA[appid = #{appid}]]>
+			 </if>
+			<if test="appname != null and appname != ''">
+			     <![CDATA[AND appname like '%${appname}%']]>
+			</if>
+		</where>
+		<![CDATA[
+			ORDER BY createTime DESC 
+			LIMIT ${startIndex}, ${pageSize}
+		]]>
+				
+	</select>
+	<select id="count" parameterType="map" resultType="int">
+	     <![CDATA[
+            SELECT COUNT(*) FROM appinfo 
+        ]]>
+        <where>
+            <if test="appid != null and appid != 0">
+                 <![CDATA[appid = #{appid} ]]>
+             </if>
+            <if test="appname != null and appname != ''">
+                 <![CDATA[AND appname like '%${appname}%']]>
+            </if>
+        </where>
+	</select>
+	
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.analysis.dao.TableInfoLogDao">
+	<insert id="insertTable" parameterType="com.zhiyou.analysis.dto.TableInfoLogDto">
+	<![CDATA[
+	 insert into table_info_log(
+		appid,
+		guid,
+		superGuid,
+		tableId,
+		useDiamond,
+		roundNum,
+		day
+		)values(
+			#{appid},
+			#{guid},
+			#{superGuid},
+			#{tableId},
+			#{useDiamond},
+			#{roundNum},
+			#{day}
+		);
+	]]>
+	</insert>
+	<select id="getTableByCondition" parameterType="com.zhiyou.analysis.dto.TableInfoLogDto">
+	<![CDATA[
+	select * from table_info_log
+	]]>
+	  	<where>
+		<if test="tableId!=null and tableId!=''">
+		<![CDATA[	and tableId=#{tableId} ]]>
+		</if>
+		<if test="appid!=null and appid!=0">
+			<![CDATA[	and appid=#{appid}   ]]>
+		</if>
+		<if test="superGuid!=null and superGuid!=''">
+			<![CDATA[ and superGuid=#{superGuid} ]]>
+		</if>
+		<if test="guid!=null and guid!=''">
+			<![CDATA[	and guid=#{guid} ]]>
+		</if>
+	</where>	
+	<![CDATA[order by updateTime desc]]>
+		<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+	
+		<select id="findTableCount" parameterType="map" resultType="com.zhiyou.analysis.dto.TableInfoLogDto">
+		<![CDATA[
+		select count(*) from table_info_log
+		]]>
+	  	<where>
+		<if test="tableId!=null and tableId!=''">
+		<![CDATA[	and tableId=#{tableId} ]]>
+		</if>
+		<if test="appid!=null and appid!=0">
+			<![CDATA[	and appid=#{appid}   ]]>
+		</if>
+		<if test="superGuid!=null and superGuid!=''">
+			<![CDATA[ and superGuid=#{superGuid} ]]>
+		</if>
+		<if test="guid!=null and guid!=''">
+			<![CDATA[	and guid=#{guid} ]]>
+		</if>
+	</where>
+	</select>
+	
+	<select id="getTableByDay" parameterType="String" resultType="com.zhiyou.analysis.dto.TableInfoLogDto">
+		<![CDATA[
+		select * from table_info_log 
+		where 
+		day = #{day}
+		]]>	
+	</select>
+	
+	<select id="getDisTableByDay" parameterType="String" resultType="com.zhiyou.analysis.dto.TableInfoLogDto">
+	<![CDATA[
+		SELECT DISTINCT appid ,superGuid  FROM table_info_log WHERE DAY=#{day};
+		]]>
+	</select>
+	
+	
+</mapper>

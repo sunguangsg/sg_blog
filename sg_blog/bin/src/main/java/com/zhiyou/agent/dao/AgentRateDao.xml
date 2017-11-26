@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.agent.dao.AgentRateDao">
+	<insert id="insert" parameterType="com.zhiyou.agent.dto.AgentRate">
+		<![CDATA[
+			INSERT ignore INTO agent_rate(
+			    appid,
+			    guid,
+			    rate1,
+				rate2,
+				rate3
+			)VALUES(
+			  #{appid},
+			  #{guid},
+			  #{rate1},
+			  #{rate2},
+			  #{rate3}
+			)
+		]]>
+	</insert>
+
+
+	<select id="getList" parameterType="map" resultType="com.zhiyou.agent.dto.AgentRate">
+		<![CDATA[	SELECT
+		*
+		FROM
+		agent_rate
+			]]>
+		<where>
+		<if test="appid != null and appid !=0"><![CDATA[and appid=#{appid}]]></if>
+		<if test="guid!=null and guid!=''"> <![CDATA[and guid=#{guid}]]></if>
+		</where>
+		<if test="startIndex != null and pageSize != null">LIMIT ${startIndex}, ${pageSize}</if>
+	</select>
+	<select id="findTotalCount" parameterType="map" resultType="int">
+	<![CDATA[
+		SELECT
+		count(*)
+		FROM
+		agent_rate
+		]]>
+		<where>
+		<if test="appid != null and appid !=0"><![CDATA[and appid=#{appid}]]></if>
+		<if test="guid!=null and guid!=''"> <![CDATA[and guid=#{guid}]]></if>
+		</where>
+	</select>
+	<select id="get" parameterType="map" resultType="com.zhiyou.agent.dto.AgentRate">
+	<![CDATA[
+		SELECT
+		*
+		FROM
+		agent_rate
+		where guid=#{guid} and appid=#{appid}
+		]]>
+	</select>
+	<delete id="delete" parameterType="map">
+		<![CDATA[
+		delete
+		FROM
+		agent_rate
+		where guid=#{guid} and appid=#{appid}
+		]]>
+	</delete>
+	<update id="update" parameterType="com.zhiyou.agent.dto.AgentRate">
+		<![CDATA[
+		update agent_rate set rate1=#{rate1},rate2=#{rate2},rate3=#{rate3}
+		where appid=#{appid} and guid=#{guid}
+		]]>
+	</update>
+</mapper>

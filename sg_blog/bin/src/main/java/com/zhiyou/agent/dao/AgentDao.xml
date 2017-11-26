@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.agent.dao.AgentDao">
+ <insert id="insert" parameterType="com.zhiyou.agent.dto.AgentDto">
+ 		<![CDATA[
+		  insert into agent (
+			   appid,
+				guid,
+				name,
+				status,
+				phone,
+				remark,
+				applyTime,
+				userNum1,
+				userNUm2,
+				userNum3,
+				agentLevel,
+				income1,
+				income2,
+				income3,
+				openid,
+				balance,
+				state,
+				freeze,
+				syn
+			)VALUES(
+			    #{appid},
+				#{guid},
+				#{name},
+				#{status},
+				#{phone},
+				#{remark},
+				#{applyTime},
+				#{userNum1},
+				#{userNum2},
+				#{userNum3},
+				#{agentLevel},
+				#{income1},
+				#{income2},
+				#{income3},
+				#{openid},
+				#{balance},
+				#{state},
+				#{freeze},
+				#{syn}
+			);
+     	]]>
+ </insert>
+ <delete id="delete" parameterType="map">
+	<![CDATA[
+		delete from agent
+		where 
+		appid =#{appid}
+		 and 
+		 guid = #{guid}
+	]]>	
+	</delete>
+<update id="frezonAgent" parameterType="map">
+ <![CDATA[ update agent set state=1 where appid=#{appid} and guid=#{guid} ]]>
+</update>	
+	
+<update id="update" parameterType="com.zhiyou.agent.dto.AgentDto">
+<![CDATA[
+  	update agent 
+  	 	set 
+			name=#{name},
+			status=#{status},
+			phone=#{phone},
+			remark=#{remark},
+			checkTime=#{checkTime},
+			agentLevel=#{agentLevel},
+			syn=#{syn}
+		 where 
+			guid=#{guid} 
+				and 
+			appid=#{appid}
+]]>
+</update>
+<update id="updateByCondition" parameterType="map">
+	update agent
+	<set>
+		<if test="state!=null">state=#{state},</if>
+		<if test="openid!=null and openid!=''">openid=#{openid},</if>
+		<if test="status!=null">status=#{status},</if>
+		<if test="userNum1!=null">userNum1=userNum1+1,</if>
+		<if test="userNum2!=null">userNum2=userNum2+1,</if>
+		<if test="userNum3!=null">userNum3=userNum3+1,</if>
+		<if test="income1!=null">income1=income1+#{income1},</if>
+		<if test="income2!=null">income2=income2+#{income2},</if>
+		<if test="income3!=null">income3=income3+#{income3},</if>
+		<if test="balance!=null">balance=balance+#{balance}</if>
+		<if test="freeze!=null">freeze=#{freeze}</if>
+		<if test="syn!=null">syn=#{syn}</if>
+	</set>
+		<![CDATA[where guid=#{guid} and appid=#{appid} ]]>
+</update>
+
+	<select id="getAgent" resultType="com.zhiyou.agent.dto.AgentDto">
+		<![CDATA[
+		select * from agent 
+			where 
+		 appid=#{appid} 
+		 	and
+		  guid = #{guid};  
+		]]>
+	</select>
+
+<select id="findForPage" parameterType="map" resultType="com.zhiyou.agent.dto.AgentDto">
+	
+	  select * from agent
+	    <where>
+				<if test="appid != null and appid !=0">and appid = #{appid} </if>
+				<if test="guid != null and guid != ''">and guid = #{guid}</if> 
+				<if test="name != null and name != ''">and name like '%${name}%'</if>
+				<if test="applyTime != null and applyTime != '' ">
+					<![CDATA[and DATE(applyTime) >= #{applyTime}]]>
+				</if>
+				<if test="checkTime != null and checkTime != '' ">
+					<![CDATA[and DATE(checkTime) <= #{checkTime}]]>
+				</if>
+			</where>
+				<![CDATA[ORDER BY applyTime DESC]]>
+				<if test="startIndex != null and pageSize != null">LIMIT ${startIndex},${pageSize}</if>
+	</select>
+	<select id="count" parameterType="map" resultType="int">
+	
+	  SELECT count(*) FROM  agent
+	    <where>
+				<if test="appid != null and appid !=0">and appid = #{appid} </if>
+				<if test="guid != null and guid != ''">and guid = #{guid}</if> 
+				<if test="name != null and name != ''">and name like '%${name}%'</if>
+				<if test="applyTime != null and applyTime != '' ">
+					<![CDATA[and DATE(applyTime) >= #{applyTime}]]>
+				</if>
+				<if test="checkTime != null and checkTime != '' ">
+					<![CDATA[and DATE(checkTime) <= #{checkTime}]]>
+				</if>
+			</where>
+				<![CDATA[ORDER BY applyTime DESC]]>
+				<if test="startIndex != null and pageSize != null">LIMIT ${startIndex},${pageSize}</if>
+	</select>
+
+	
+	
+</mapper>

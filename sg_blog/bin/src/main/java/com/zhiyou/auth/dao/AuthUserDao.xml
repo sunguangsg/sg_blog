@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.auth.dao.AuthUserDao">
+
+	<insert id="doInsertAuthUser" parameterType="com.zhiyou.auth.dto.AuthUser" useGeneratedKeys="true" keyProperty="userId" >
+		<![CDATA[
+			insert into auth_user(
+				username,
+				password,
+				realname,
+				appid,
+				openid,
+				guid,
+				company,
+			    address,
+				mobile,
+				telephone,
+				qq,
+				status,
+				regTime,
+				loginTime
+			)values(
+				#{username},
+				#{password},
+				#{realname},
+				#{appid},
+				#{openid},
+				#{guid},
+				#{company},
+				#{address},
+				#{mobile},
+				#{telephone},
+				#{qq},
+				#{status},
+				#{regTime},
+				#{loginTime}
+			)
+		]]>
+	</insert>
+
+	<update id="doUpdateAuthUser" parameterType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[
+			update auth_user
+			set 
+				realname = #{realname},
+				company = #{company},
+				address = #{address},
+				mobile = #{mobile},
+				telephone = #{telephone},
+				qq = #{qq},
+				status = #{status},
+				openid=#{openid}
+			where
+				userId = #{userId}					
+		]]>
+	</update>
+	
+	
+	<update id="updateByCondition" parameterType="map">
+	update auth_user
+	<set>
+		<if test="status!=null">status=#{status},</if>
+		<if test="openid!=null and openid!=''">openid=#{openid},</if>
+		<if test="company!=null and company!=''">company=#{company},</if>
+		<if test="address!=null and address!=''">address=#{address},</if>
+		<if test="mobile!=null and mobile!=''">mobile=#{mobile},</if>
+	</set>
+		<![CDATA[WHERE guid=#{guid} and appid=#{appid} ]]>
+</update>
+	
+	<update id="frozenUser" parameterType="int">
+		<![CDATA[
+		update auth_user set status=2 where userId = #{userId}
+	]]>
+	</update>
+	
+	<select id="getAuthUser" parameterType="map" resultType="com.zhiyou.auth.dto.AuthUser">
+			<![CDATA[
+			select * from auth_user where appid = #{appid} and guid=#{guid};
+		]]>
+	</select>
+	<delete id="doDeleteAuthUser" parameterType="int">
+		<![CDATA[
+			delete from auth_user where userId = #{userId}	
+		]]>
+	</delete>
+	<!--删除用户关联的角色  -->
+		<delete id="doDeleteAuthUserRole" parameterType="int">
+		<![CDATA[
+			delete from auth_user_role where userId = #{userId}	
+		]]>
+	</delete>
+	<!-- 更新auther的密码 -->
+	<update id="doUpdatePWD" parameterType="map">
+	<![CDATA[
+			update auth_user set password=#{newPWD} where userId = #{userId}	
+	]]>
+	</update>
+	<select id="doGetAuthUserList" parameterType="map" resultType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[	
+			SELECT * from
+			auth_user a
+		]]>
+		<where>
+		<if test="userId != null and userId != ''">
+				<![CDATA[and a.userId=#{userId}]]>
+			</if>
+			<if test="guid != null and guid != ''">
+				<![CDATA[and a.guid=#{guid}]]>
+			</if>
+			<if test="appid != null and appid != 0">
+				<![CDATA[and a.appid=#{appid}]]>
+			</if>
+			<if test="username != null and username != ''">
+				<![CDATA[and a.username like '%${username}%']]>
+			</if>
+		</where>
+			<![CDATA[order by regTime desc]]>
+		<![CDATA[limit #{startIndex},#{pageSize}]]>
+	</select>
+	
+	<select id="doGetAuthUserListCount" parameterType="map" resultType="int">
+		 <![CDATA[
+ 	         SELECT  
+	        	count(*)
+			 FROM
+				auth_user a
+		]]> 
+		<where>
+			<if test="userId != null and userId != ''">
+				<![CDATA[ and a.userId=#{userId}]]>
+			</if>
+			<if test="appid != null and appid != 0">
+				<![CDATA[ and a.appid=#{appid}]]>
+			</if>
+			<if test="guid != null and guid != ''">
+				<![CDATA[and a.guid=#{guid}]]>
+			</if>
+			<if test="username != null and username != ''">
+				<![CDATA[and a.username like '%${username}%']]>
+			</if>
+		</where>
+	</select>
+	
+	<select id="doGetAuthUserById" parameterType="int" resultType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[	
+			SELECT
+			a.*
+			FROM
+				auth_user a
+			WHERE
+				a.userId = #{userid}	
+		]]>	
+	</select>
+	
+	<select id="doGetAuthUserByOpenid" parameterType="string" resultType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[	
+			SELECT
+			a.*
+			FROM
+				auth_user a
+			WHERE
+				a.openid = #{openid}	
+		]]>	
+	</select>
+	<select id="doGetAuthUserByName" parameterType="string" resultType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[	
+			SELECT
+			a.*
+			FROM
+				auth_user a
+			WHERE
+				a.username = #{userName}
+		]]>	
+	</select>
+	
+	<select id="doGetAllUserList" resultType="com.zhiyou.auth.dto.AuthUser">
+		<![CDATA[	
+			SELECT
+		      *
+			FROM
+				auth_user	
+		]]>	
+	</select>
+	
+	<update id="updateLoginTime">
+		<![CDATA[	
+	update auth_user set loginTime=#{loginTime} where username=#{userName}
+		]]>	
+	</update>
+	<insert id="insertUserRole" parameterType="map">
+     <![CDATA[  insert ignore into auth_user_role(userid,roleid) values(#{userid},#{roleid})]]>	
+	</insert>
+	<delete id="deleteUserRoleByUserID" parameterType="int">
+		<![CDATA[
+	delete from auth_user_role where userid=#{userid}
+		]]>	
+	</delete>
+</mapper>

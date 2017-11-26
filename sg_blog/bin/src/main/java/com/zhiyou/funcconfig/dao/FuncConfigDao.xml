@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.funcconfig.dao.FuncConfigDao">
+	<insert id="insertFuncConfig" parameterType="com.zhiyou.funcconfig.dto.FuncConfigDto">
+		<![CDATA[
+			insert into func_config(
+				appid,
+				funcName,
+				notfiyUrl
+			)values(
+				#{appid},
+				#{funcName},
+				#{notfiyUrl}
+			);
+		]]>
+	</insert>
+	<delete id="deleteFuncConfig" parameterType="map">
+		<![CDATA[
+			delete from func_config where 
+				appid =#{appid}
+			 	and
+				funcName = #{funcName};
+		]]>
+	</delete>
+	<update id="updateFuncConfig" parameterType="com.zhiyou.funcconfig.dto.FuncConfigDto">
+		<![CDATA[
+		  update func_config 
+		 		 set 
+		  	notfiyUrl = #{notfiyUrl}
+		  	where 	
+		  	appid  = #{appid}
+		  	and 
+		  	funcName = #{funcName}
+		]]>
+	</update>
+	
+	<select id="getSynUrl" parameterType="map" resultType="com.zhiyou.funcconfig.dto.FuncConfigDto">
+			<![CDATA[
+	 	select * from func_config
+	 	 where 
+	 	appid = #{appid}
+	 	and
+	 	funcName =#{funcName}
+	 	;
+	 		]]>
+	</select>
+	
+	<select id="findForPage" parameterType="map" resultType="com.zhiyou.funcconfig.dto.FuncConfigDto">
+	  	  SELECT * FROM  func_config 
+	    <where>
+				<if test="appid != null and appid != 0"> appid = #{appid} </if>
+				<if test=" funcName != null and  funcName != ''">AND funcName like '%${ funcName}%'</if>
+		</where>
+				<![CDATA[
+				LIMIT ${startIndex}, ${pageSize}
+				]]>
+	</select>
+	<select id="count" parameterType="map" resultType="int">
+		 
+		  SELECT count(*) FROM   func_config
+	    <where>
+				<if test="appid != null and appid != 0">
+					<![CDATA[appid = #{appid}  ]]>
+				</if>
+				<if test=" funcName != null and  funcName != ''">
+					<![CDATA[AND funcName like '%${ funcName}%']]>
+				</if>
+			</where>
+	</select>
+	
+	
+</mapper>

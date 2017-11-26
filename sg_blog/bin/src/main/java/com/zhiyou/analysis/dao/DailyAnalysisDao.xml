@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.analysis.dao.DailyAnalysisDao">
+	<insert id="insertDailyAnalysis" parameterType="com.zhiyou.analysis.dto.DailyAnalysisDto">
+	<![CDATA[
+	 insert into daily_analysis(
+		appid,
+		day,
+		regNum,
+		dau,
+		online,
+		onlineTime,
+		updateTime
+		)values(
+			#{appid},
+			#{day},
+			#{regNum},
+			#{dau},
+			#{online},
+			#{onlineTime},
+			#{updateTime}
+		);
+	]]>
+	</insert>
+	
+	<update id="updateDailyAnalysis" parameterType="com.zhiyou.analysis.dto.DailyAnalysisDto">
+		<![CDATA[
+		 update daily_analysis
+		   set regNum = #{regNum},
+		      dau = #{dau},
+		      online = #{online},
+		      onlineTime = #{onlineTime}
+		    where appid =#{appid} 
+		    and day =#{day}
+		]]>
+	</update>
+<select id="count" parameterType="map" resultType="int">
+<![CDATA[
+	SELECT
+	count(*)
+    FROM
+	daily_analysis
+]]>
+    <where>
+			    <if test="appid != null and appid !=0 "><![CDATA[and appid = #{appid}]]> </if>
+				<if test="day != null and day != ''"><![CDATA[and day =#{day}]]></if>
+	</where>	
+	
+			
+	</select>
+	
+<select id="findForPage" parameterType="map" resultType="com.zhiyou.analysis.dto.DailyAnalysisDto">
+	     	 <![CDATA[
+	SELECT DISTINCT
+	da.appid appid,
+	da.`day` DAY,
+	da.regNum regNum,
+	da.dau dau,
+    da.`online` `online`,
+    da.onlineTime onlineTime,
+    da.updateTime updateTime,
+    dta.tableNum tableNum,
+    dta.roundNum roundNum,
+    dta.useDiamond useDiamond,
+    dra.totalFee totalFee
+    FROM
+	daily_analysis AS da
+    LEFT JOIN daily_recharge_analysis AS dra ON da.appid = dra.appid AND da.day = dra.day
+    LEFT JOIN daily_table_analysis AS dta ON da.appid = dta.appid AND da.day = dta.day
+]]>
+    <where>
+			    <if test="appid != null and appid !=0 "><![CDATA[and da.appid = #{appid}]]> </if>
+				<if test="day != null and day != ''"><![CDATA[and da.day =#{day}]]></if>
+	</where>
+			<![CDATA[ORDER BY da.day DESC]]>
+			<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+	
+	<select id="getDailyAnalysisDto" parameterType="map" resultType="com.zhiyou.analysis.dto.DailyAnalysisDto">
+		<![CDATA[
+		select * from daily_analysis where appid=#{appid} and day=#{day}
+	   ]]>
+	</select>
+	<select id="getDayRegNum" parameterType="map" resultType="int">
+	<![CDATA[
+	select count(*) num from user_info where appid=#{appid} and DATEDIFF(regTime,#{day})=0
+	]]>
+	</select>
+  <select id="getDayTableNum" parameterType="map" resultType="int">
+	<![CDATA[
+	select count(*) from table_info_log 
+	]]>
+	<where>
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and day=#{day}</if>
+	</where>
+	</select>
+	
+	 <select id="getDayRoundNum" parameterType="map" resultType="int">
+	<![CDATA[
+	select ifnull(sum(roundNum),0) from table_info_log 
+	]]>
+	<where>
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and day=#{day}</if>
+	</where>
+	</select>
+		
+	 <select id="getDayDiamondUsed" parameterType="map" resultType="int">
+	<![CDATA[
+	select ifnull(sum(useDiamond),0) from table_info_log 
+	]]>
+	<where>
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and day=#{day}</if>
+	</where>
+	</select>
+	
+	
+	<insert id="insertBatchDailyTableAnalysis" parameterType="string">
+			<![CDATA[
+				INSERT INTO daily_table_analysis (
+					  appid,
+					  day,
+					  tableNum,
+					  roundNum,
+					  useDiamond,
+					  updateTime
+					) 
+					SELECT 
+					  appid,
+					  day,
+					  COUNT(DISTINCT tableId),
+					  SUM(roundNum)/4,
+					  SUM(useDiamond),
+					  NOW() 
+					FROM
+					  table_info_log 
+					WHERE day = #{day}
+					GROUP BY appid 
+	]]>
+</insert>
+	<insert id="insertBatchDailyRechargeAnalysis" parameterType="string">
+			<![CDATA[
+				INSERT INTO daily_recharge_analysis (
+				      day,
+					  appid,
+					  totalFee,
+					  updateTime
+					) 
+					SELECT 
+					  date_format(payTime, '%Y-%m-%d'),
+					  appid,
+					  SUM(totalFee),
+					  NOW() 
+					FROM
+					  order_info 
+					WHERE datediff(payTime,#{day}) = 0
+					GROUP BY appid 
+	]]>
+</insert>
+
+
+</mapper>

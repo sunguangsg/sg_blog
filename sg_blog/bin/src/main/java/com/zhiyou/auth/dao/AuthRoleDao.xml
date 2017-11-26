@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.auth.dao.AuthRoleDao">
+
+	<insert id="doInsertAuthRoleDto" parameterType="com.zhiyou.auth.dto.AuthRole" useGeneratedKeys="true" keyProperty="roleId">
+		<![CDATA[
+			insert into auth_role(
+				roleName,
+				remark
+			)values(
+				#{roleName},
+				#{remark}
+			)
+		]]>
+	</insert>
+
+	<update id="doUpdateAuthRoleDto" parameterType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[
+			update auth_role
+			set 
+				roleName = #{roleName},
+			    remark = #{remark}
+			where
+				roleId = #{roleId}					
+		]]>
+	</update>
+	
+	
+		<select id="doGetAuthRoleList" parameterType="map" resultType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[	
+			SELECT * from
+			auth_role 
+		]]>
+		<where>
+			<if test="roleName != null and roleName != ''">
+				<![CDATA[ and roleName like '%${roleName}%']]>
+			</if>
+			<if test="roleId != null and roleId != ''">
+				<![CDATA[ and roleId=#{roleId}]]>
+			</if>
+		</where>
+		<![CDATA[limit #{startIndex},#{pageSize}]]>
+	</select>
+	
+	<select id="doGetAuthRoleListCount" parameterType="map" resultType="int">
+		 <![CDATA[
+ 	         SELECT  
+	        	count(*)
+			 FROM
+				auth_role 
+		]]> 
+		<where>
+			<if test="roleName != null and roleName != ''">
+				<![CDATA[and roleName like '%${roleName}%']]>
+			</if>
+			<if test="roleId != null and roleId != ''">
+				<![CDATA[and roleId=#{roleId}]]>
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	<delete id="doDeleteAuthRoleDto" parameterType="int">
+		<![CDATA[
+			delete from auth_role where roleId = #{roleId}
+		]]>
+	</delete>
+	
+	<delete id="doDeleteAuthRoleMenuDto" parameterType="int">
+		<![CDATA[
+			delete from auth_role_resource where roleId = #{roleId}
+		]]>
+	</delete>
+	
+	<select id="doGetRoleList" resultType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[	
+			SELECT
+				roleId,
+				remark,
+				roleName
+			FROM
+				auth_role		
+		]]>
+	</select>
+	
+	<select id="doGetAuthRoleDtoById" parameterType="int" resultType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[	
+			SELECT
+				roleId,
+				remark,
+				roleName
+			FROM
+				auth_role	
+			WHERE
+				roleId = #{roleId}	
+		]]>
+	</select>
+	
+	<select id="doGetRoleByName" parameterType="String" resultType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[	
+			SELECT
+				roleId,
+				remark,
+				roleName
+			FROM
+				auth_role	
+			WHERE
+				roleName = #{roleName}	
+			LIMIT 1	
+		]]>	
+	</select>
+	<insert id="insertRoleResource" parameterType="map">
+		<![CDATA[ insert ignore into auth_role_resource (roleId,resourceId) values(#{roleid},#{resourceid})  ]]>	
+	</insert>
+	<delete id="deleteRoleResourceByRoleid" parameterType="int">
+	<![CDATA[ delete from auth_role_resource where roleId=#{roleid} ]]>	
+	</delete>
+	
+	<select id="getRolesByUserID" parameterType="int" resultType="com.zhiyou.auth.dto.AuthRole">
+		<![CDATA[
+	select ar.* from auth_user_role aur left join auth_role ar on aur.roleId=ar.roleId where aur.userId=#{userID}
+		]]>	
+	</select>
+	
+</mapper>

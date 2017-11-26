@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.notice.dao.AgentNoticeDao">
+	<insert id="insert" parameterType="com.zhiyou.notice.dto.AgentNoticeDto" useGeneratedKeys="true" keyProperty="id">
+	<![CDATA[
+	 INSERT INTO agent_notice(
+	    appid,
+		name,
+		content,
+		createTime,
+		updateTime
+		)VALUES(
+			#{appid},
+			#{name},
+			#{content},
+			#{createTime},
+			#{updateTime}
+		);
+	]]>
+	</insert>
+	<delete id="delete" parameterType="com.zhiyou.notice.dto.AgentNoticeDto">
+		<![CDATA[
+			DELETE FROM agent_notice
+			WHERE id = #{id};
+		]]>
+	</delete>
+	<update id="update" parameterType="com.zhiyou.notice.dto.AgentNoticeDto">
+		<![CDATA[
+				UPDATE agent_notice
+			SET 
+				 name= #{name},
+				 content =#{content},
+				 createTime =#{createTime},
+				updateTime = #{updateTime},
+				state =#{state}
+					WHERE
+				id = #{id};
+		]]>
+	</update>
+	<select id="getid" parameterType="int" resultType="com.zhiyou.notice.dto.AgentNoticeDto" >
+		<![CDATA[
+		SELECT
+			id,
+			name,
+			content,
+			createTime,
+			updateTime 
+	  	 FROM agent_notice
+     	 WHERE id = #{id};
+		]]>
+	</select>
+	<select id="getName" parameterType="int" resultType="com.zhiyou.notice.dto.AgentNoticeDto">
+	  select 
+	  	id,
+	   	name,
+	   	content,
+	   	createTime,
+	   	updateTime,
+	   	state
+	   from agent_notice
+	  where name =#{name};
+	</select>
+	
+	<select id="findForPage" parameterType="map" resultType="com.zhiyou.notice.dto.AgentNoticeDto">
+		<![CDATA[
+		 SELECT * FROM  agent_notice
+		]]>
+	    <where>
+			<if test="id != null and id != ''">
+			     <![CDATA[and id = #{id} ]]>
+			 </if>
+			 	<if test="appid != null and appid != 0">
+			     <![CDATA[and appid = #{appid} ]]>
+			 </if>
+			<if test="name != null and name != ''">
+			     <![CDATA[and name like '%${name}%']]>
+			</if>
+			  <if test="state != null and state != ''">
+                   <![CDATA[and state=#{state}]]>
+            </if>
+		</where>
+		<![CDATA[
+			ORDER BY createTime DESC 
+			LIMIT ${startIndex}, ${pageSize}
+		]]>
+				
+	</select>
+	<select id="count" parameterType="map" resultType="int">
+	     <![CDATA[
+            SELECT COUNT(*) FROM agent_notice 
+        ]]>
+        <where>
+            <if test="id != null and id != ''">
+                 <![CDATA[and id = #{id} ]]>
+             </if>
+              	<if test="appid != null and appid != 0">
+			     <![CDATA[and appid = #{appid} ]]>
+			 </if>
+            <if test="name != null and name != ''">
+                 <![CDATA[and name like '%${name}%']]>
+            </if>
+              <if test="state != null and state != ''">
+                 <![CDATA[and state=#{state}]]>
+            </if>
+            
+        </where>
+	</select>
+	
+</mapper>

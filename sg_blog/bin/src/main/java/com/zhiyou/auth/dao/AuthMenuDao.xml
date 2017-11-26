@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.auth.dao.AuthMenuDao">
+
+	<insert id="doInsertAuthMenuDto" parameterType="com.zhiyou.auth.dto.AuthMenuDto" useGeneratedKeys="true" keyProperty="resourceId">
+		<![CDATA[
+			insert into auth_resources(
+				name,
+				href,
+				icon,
+				parentId,
+				orderby,
+				state,
+				description,
+				createTime,
+				updateTime,
+				type
+			)values(
+				#{name},
+				#{href},
+				#{icon},
+				#{parentId},
+				#{orderby},
+				#{state},
+				#{description},
+				#{createTime},
+				#{updateTime},
+				#{type}
+			)
+		]]>
+	</insert>
+
+	<update id="doUpdateAuthMenuDto" parameterType="com.zhiyou.auth.dto.AuthMenuDto">
+		<![CDATA[
+			update auth_resources
+			set 
+				name = #{name},
+				href = #{href},
+				icon = #{icon},
+				parentId = #{parentId},
+				orderby = #{orderby},
+				state = #{state},
+				description = #{description},
+				updateTime = #{updateTime},
+				type=#{type}
+			where
+				resourceId = #{resourceId}					
+		]]>
+	</update>
+	
+	<delete id="doDeleteAuthMenuDto" parameterType="int">
+		<![CDATA[
+			delete from auth_resources where resourceId = #{resourceId}	
+		]]>
+	</delete>
+<delete id="doDeleteByParentId" parameterType="int">
+	<![CDATA[
+			delete from auth_resources where parentId = #{parentId}	
+		]]>
+</delete>
+	<select id="doGetMenuList" parameterType="int" resultType="com.zhiyou.auth.dto.AuthMenuDto">
+	
+			SELECT
+				resourceId,
+				name,
+				href,
+				icon,
+				parentId,
+				orderby,
+				state,
+				description,
+				createTime,
+				updateTime,
+				type
+			FROM
+				auth_resources
+			<where>
+			<if test="type==1">
+		     	and type=#{type}
+			</if>
+			</where>	
+	</select>
+	<select id="doGetAuthMenuDtoList" parameterType="map" resultType="com.zhiyou.auth.dto.AuthMenuDto">
+		<![CDATA[	
+			SELECT *
+			FROM
+			auth_resources 
+		]]>
+		<![CDATA[limit #{startIndex},#{pageSize}]]>
+	</select>
+	<select id="doGetAuthMenuDtoById" parameterType="int" resultType="com.zhiyou.auth.dto.AuthMenuDto">
+		<![CDATA[
+			SELECT
+				resourceId,
+				name,
+				href,
+				icon,
+				parentId,
+				orderby,
+				state,
+				description,
+				createTime,
+				updateTime
+			FROM
+				auth_resources
+			WHERE
+				resourceId = #{resourceId}
+		]]>
+	</select>
+	<select id="totalCount" resultType="int">
+	select count(1) from auth_resources
+	</select>
+	
+	<select id="getResourcesByRoleIDs" parameterType="list"  resultType="com.zhiyou.auth.dto.AuthMenuDto">
+		<![CDATA[ SELECT DISTINCT ar.* FROM auth_role_resource arr LEFT JOIN auth_resources ar ON arr.resourceId= ar.resourceId 
+				WHERE arr.roleId in
+		]]>
+	      <foreach item="item" collection="roleIDs" separator="," open="(" close=")" index="">    
+          #{item}    
+        </foreach>
+	</select>
+		<select id="getResourceIDByRoleID" parameterType="int"  resultType="Integer">
+		<![CDATA[ SELECT DISTINCT resourceId FROM auth_role_resource where roleId=#{roleId}
+		]]>
+	</select>
+	
+</mapper>

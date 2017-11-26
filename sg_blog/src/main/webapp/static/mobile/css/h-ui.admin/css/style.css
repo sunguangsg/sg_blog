@@ -1,0 +1,293 @@
+/* @charset "utf-8"; */
+/* 自己的样式 */
+body { background: #F5F6F6;}
+a {color:#333;text-decoration: none;}
+ label {width: 94px;text-align: right;display: inline-block;}
+.breadcrumb  a i{font-size:17px;float:right;}
+.input-text {width: 58%;height: 30px;}
+.search { float: right;margin-bottom: 20px;}
+/* .marginLeft {margin-left:-45px;} */
+.displayVisL {width: 170px; margin-top: 10px;float: left; margin-left: 5px;}
+.displayVisR {float: right;margin-right: 5px;}
+.page-container {padding:8px;}
+.displayVisR button { width: 60px; height: 30px;background: white;border: 1px solid #ccc;}
+.displayVisR span {border: 1px solid #ccc;padding: 3px 7px 8px 11px; margin-right: 5px;background: #5a98de; color: #fff;}
+.clearfix:after {content: " ";display: block; clear: both;visibility: hidden;line-height: 0; height: 0; font-size:0;}
+.clearfix { *zoom:1;}
+.active {color: #e3e3e3;}
+.person{ border-bottom: 1px solid #ccc;padding-bottom: 20px; padding-left: 60px;background: #EDEDEA; padding-top: 15px;}
+.person div { margin: 10px 0;}
+.person .basemsg {margin-top: 0px;padding-right: 6px;}
+.person .basemsg span{ padding-left:7px; font-weight: 700;}
+.person .basemsg i { padding-right: 7px;}
+/* .person div span:nth-child(2){margin-right: 30px;} */
+/* .person div:nth-child(4) span:nth-child(1) { margin-left: 22px;} */
+.person .remain a { color: #DC143C; margin-left:8px;}
+a:hover {text-decoration: none;}
+a:visited {color:#333;}
+.personP .ul {float:left;width: 100%; border-bottom: 1px solid #ccc; background: #EDEDEA;}
+.personP .ul .li {float:left; margin: 15px 0;width: 25%;text-align: center;}
+.personP .li ul {margin:15px;}
+.personP .li ul li { margin: 10px 0;}
+.dataTime .ul li{ float:left;}
+.floatL li { float:left; width: 30%;text-align: center; padding:10px 0;}
+.hover li a:hover{color:#DC143C ! important ;}
+/*  order-list 的 css begin   */
+.floatL { float:left;}
+.floatR { float:right;}
+/* .person {
+    margin-bottom:20px;
+} */
+/* .person ul {
+ width:50%;
+} */
+.overflowA {
+	overflow:auto;
+}
+.borderR {
+	border-radius: 6px;
+}
+.person ul li{
+ width:100%;
+ padding:5px 0;
+ text-align:left;
+}
+.odd {
+background-color: black;
+}
+.even {
+background-color: #cef;
+}
+.person {
+    margin-bottom:20px;
+}
+.person ul {
+ width:50%;
+}
+.dataTime .search {
+    float: left;
+    width: 100%;
+    padding: 10px 0px;
+    background: #EDEDEA;
+  }
+.person ul li{
+ width:100%;
+ padding:5px 0;
+ text-align:left;
+}
+.addMore {
+   width: 100%;
+    height: 30px;
+    background: lightgrey;
+    margin-top: 8%;
+  }
+ .addMore span{
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 30px;
+    }
+  .wid {
+    word-wrap:break-word ;
+  }
+  .sendInfo {
+  width: 37%;
+    float: right;
+    margin-right:7%;
+    height: 30px;
+    background: #5A98DE;
+    text-align: center;
+    line-height: 30px;
+    color:#fff;
+}
+.blue {
+    background: #5a98de;
+    color: #fff;
+   }
+.foot_cont {
+    width:100%;
+    height:50px;
+    background:#EAEAE3;
+    position: fixed;
+    bottom: 0px;
+
+}
+.foot_cont div {
+    float:left;
+    width: 23%;
+    height: 100%;
+    text-align: center;
+    line-height: 50px;
+}
+.foot  {
+     width:100%;
+    height:50px;
+}
+.foot_cont a {
+    position: absolute;
+    top: 11px;
+    color: #778899;
+}
+.foot_cont a i {
+    font-size:17px;
+    position: absolute;
+    top:-18px;
+    color: #778899;
+    left: 4px;
+}
+.exit_out {
+    height:50px;
+    width:100%;
+    background: #EDEDEA;
+    line-height: 50px;
+    font-weight: 600;
+    margin: 25px 0;
+    padding: 14px 0;
+}
+.exit {
+    display:block;
+    height: 48px;
+    border: 3px solid #ccc;
+    box-sizing: content-box;
+    width: 80%;
+    text-align: center;
+     background:#F05050;
+     margin-left: 8%;
+     border-radius: 18px;
+     color: white;
+}
+/*  order-list 的 css end   */
+/*   modify-password 的 css */
+.input-text.size-L ,
+.btn.size-L {
+  font-size: 14px;
+}
+
+.table th, .table td {
+    padding: 8px 0px;
+    }
+/*  login and  modify-password  begin  */
+ .PasswordBox {
+ position: absolute;
+    width: 617px;
+    height: 330px;
+    margin: auto;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #D8D8D8;
+    border-radius: 7px 7px 7px 7px;
+    box-shadow: 0 1px 4px #D3D3D3;
+    position: relative;
+    top: 220px;
+    }
+
+@media (max-width: 450px){
+.person{
+  padding-left: 20px;
+}
+.personP .ul .li {
+    width: 30%;
+}
+.personP .li ul {
+  margin:10px;
+}
+}
+ @media (max-width: 321px){
+.PasswordBox {
+    width: 300px;
+    height: 387px;
+    overflow-x: hidden;
+    top: 0px;
+}
+.marginLeftL {
+  margin-left:34%;
+}
+
+}
+ @media (min-width: 322px) and (max-width:450px){
+.PasswordBox {
+    width: 300px;
+    height: 387px;
+    top:0px;
+
+}
+
+ form {
+    margin-top: 15%;
+    margin-left:9%;
+} 
+/* .marginLeftL {
+  margin-left:30%;
+} */
+}
+@media (min-width:451px) and (max-width:768px){
+.PasswordBox {
+    width: 542px;
+    height: 387px;
+}
+form {
+    margin-left: 13%;
+    margin-top: 30%;
+}
+.marginLeftL {
+  margin-left:40%;
+}
+}
+@media (min-width:769px){
+.PasswordBox {
+    width: 542px;
+    height: 400px;
+}
+.marginLeftL {
+  margin-left:40%;
+}
+}
+/*  login and  modify-password  end   */
+ /* 媒体查询 */
+
+ @media (max-width: 350px) {
+  /*   .vip_box {
+      margin-left:35px;
+  }
+  .marginLeft {
+     margin-left:0px;
+  } */
+    .search {
+         margin-top: 12px;
+         margin-bottom:20px;
+    }
+     .table {
+      min-width: 100%;
+       margin: auto;
+   }
+
+}
+@media (min-width: 351px) and (max-width: 450px) {
+  /*   .vip_box {
+   margin-left:70px;
+  } */
+/* .marginLeft {
+       margin-left:-38px;
+    } */
+    /* .input {
+        width:62%;
+    } */
+    /* 从当前数据中搜素 */
+     .search {
+          margin-top: 12px;
+         margin-bottom:20px;
+
+    }
+     .table {
+       min-width: 100%;
+       margin: auto;
+   }
+}
+@media  (min-width: 451px) and (max-width: 770px) {
+    /* .vip_box {
+        margin-left:180px;
+    } */
+     .table {
+           min-width:100%;
+           margin: auto;
+       }
+}

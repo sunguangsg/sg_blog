@@ -1,0 +1,222 @@
+/* @charset "utf-8"; */
+/* 你自己的样式 */
+
+form {
+    margin: 20px 0;
+}
+
+.input-text {
+    width: 53%;
+    height: 30px;
+}
+.search {
+        float: right;
+        margin-bottom: 20px;
+        width:59%;
+}
+.marginLeft {
+     margin-left:-45px;
+}
+
+.displayVisL {
+     width: 170px;
+    margin-top: 10px;
+    float: left;
+}
+.displayVisR {
+     margin-top: 10px;
+    float: right;
+    width: 100%;
+}
+.displayVisR button {
+     width: 60px;
+    height: 30px;
+    background: white;
+    border: 1px solid #ccc;
+}
+.displayVisR button:hover {
+    background: #5a98de;
+    color: #fff;
+}
+.displayVisR span {
+    border: 1px solid #ccc;
+    padding: 3px 7px 6px 11px;
+    margin-right: 5px;
+    background: #5a98de;
+    color: #fff;
+}
+
+.btn-success{
+	margin-left:7px;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+    font-size:0;
+}
+
+.clearfix { *zoom:1;}
+/* 新增*/
+.add {
+	float:left;
+	width: 78px;
+    height: 30px;
+    background: #5a98de;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+label {
+         width: 120px;
+         text-align: right;
+         display: inline-block;
+   }
+.add a {
+	 color: #fff;;
+	 display: block;
+
+}
+ .search {
+	width:70%;
+}
+
+@media (max-width:768px) {
+.fr {
+	width: 50%;
+}
+}
+@media (min-width:769px) and (max-width:992px){
+	.fr {
+	width: 50%;
+}
+}
+@media  (min-width:1201px){
+.fr {
+	width: 23%;
+}
+/* .search {
+	width:80%;
+} */
+}
+.input-text {
+
+	width: 60%;
+}
+.fr , label .btn {
+	float: left;
+	margin: 3px 0px;
+}
+label span {
+	width: 30%;
+	text-align: right;
+}
+label .btn {
+	margin-left:3px;
+}
+.vip_box {
+     text-align: center;}
+ /* 媒体查询 */
+
+ @media (max-width: 350px) {
+    .vip_box {
+        margin-left:35px;
+}
+    .marginLeft {
+       margin-left:0px;
+    }
+    .search {
+         margin-top: 0px;
+         margin-bottom:20px;
+    }
+     .table {
+      min-width: 147%;
+       margin: auto;
+   }
+  /*  .displayVisL,
+   .displayVisR  {
+        display:none;
+    } */
+}
+@media (min-width: 351px) and (max-width: 450px) {
+    .vip_box {
+     margin-left:70px;
+}
+    .input {
+        width:62%;
+    }
+    /* 从当前数据中搜素 */
+     .search {
+         margin-top: 0px;
+         margin-bottom:20px;
+
+    }
+     .table {
+       min-width: 171%;
+       margin: auto;
+   }
+    /* .displayVisL,
+    .displayVisR {
+            display:none;
+        } */
+  
+}
+@media  (min-width: 451px) and (max-width: 770px) {
+    .vip_box {
+        margin-left:180px;
+}
+     .table {
+           min-width:100%;
+           margin: auto;
+       }
+   /*  .displayVisL,
+    .displayVisR {
+        display:none;
+    } */
+
+}
+@media (min-width: 771px) and (max-width: 786px) {
+     .vip_box {
+     margin-left:180px;
+    }
+    .table {
+            min-width:100%;
+           margin: auto;
+       }
+     
+
+}
+@media (min-width: 787px) and (max-width: 992px) {
+     /* .vip_box {
+     margin-left:250px;
+} */
+     .table {
+           min-width:100%;
+           margin: auto;
+       }
+  
+}
+@media (min-width: 993px) {
+   /*   .vip_box {
+     margin-left:500px;
+} */
+     .table {
+           min-width:100%;
+           margin: auto;
+       }
+}
+
+
+
+
+
+
+
+
+
+
+

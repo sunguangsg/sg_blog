@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.agent.dao.AgentBaseRateDao">
+	<insert id="insert" parameterType="com.zhiyou.agent.dto.AgentBaseRate">
+		<![CDATA[
+			insert into agent_base_rate(
+				appid,
+				level,
+			    name,
+			    rate1,
+				rate2,
+				rate3
+			)VALUES(
+			  #{appid},
+			  #{level},
+			  #{name},
+			  #{rate1},
+			  #{rate2},
+			  #{rate3}
+			)
+		]]>
+	</insert>
+
+
+	<select id="getList" parameterType="map" resultType="com.zhiyou.agent.dto.AgentBaseRate">
+		<![CDATA[SELECT
+		*
+		FROM
+		agent_base_rate
+			]]>
+		<where>
+		<if test="appid != null and appid !=0"><![CDATA[and appid=#{appid}]]></if>
+		</where>
+		<if test="startIndex != null and pageSize != null">LIMIT ${startIndex}, ${pageSize}</if>
+	</select>
+	<select id="findTotalCount" parameterType="map" resultType="int">
+	<![CDATA[
+		SELECT
+		count(*)
+		FROM
+		agent_base_rate
+		]]>
+		<where>
+		<if test="appid != null and appid !=0"><![CDATA[and appid=#{appid}]]></if>
+		</where>
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="getListBaseRateByAppid" parameterType="int" resultType="com.zhiyou.agent.dto.AgentBaseRate">
+	   <![CDATA[
+			SELECT
+			  *
+			FROM
+			agent_base_rate
+			where appid=#{appid}
+		]]>
+	</select>
+	<select id="getByAppIDLevel" parameterType="map" resultType="com.zhiyou.agent.dto.AgentBaseRate">
+	   <![CDATA[
+			SELECT
+			  *
+			FROM
+			agent_base_rate
+			where appid=#{appid}  and level=#{level}
+		]]>
+	</select>
+	<delete id="deletByAppIDLevel" parameterType="map">
+	   <![CDATA[
+		delete
+		FROM
+		agent_base_rate
+		where appid=#{appid} and level=#{level}
+		]]>
+	</delete>
+	<update id="updateByAppIDLevel" parameterType="com.zhiyou.agent.dto.AgentBaseRate">
+	   <![CDATA[
+		update agent_base_rate 
+		set rate1=#{rate1},
+			rate2=#{rate2},
+			rate3=#{rate3},
+			name=#{name}
+		where appid=#{appid} and level=#{level}
+		]]>
+	</update>
+</mapper>

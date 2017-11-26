@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.user.dao.UserInfoDao">
+
+	<select id="getUserInfo" parameterType="map" resultType="com.zhiyou.user.dto.UserInfoDto">
+		<![CDATA[
+		SELECT *
+			 FROM user_info 
+				 WHERE 
+			 		guid =#{guid} and appid=#{appid};
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="com.zhiyou.user.dto.UserInfoDto" >
+	<![CDATA[
+		INSERT ignore INTO user_info(
+				appid,
+				guid,
+				nickName,
+				superGuid,
+				bindTime,
+				regTime,
+				totalFee
+		)VALUE(
+				#{appid},
+				#{guid},
+				#{nickName},
+				#{superGuid},
+				#{bindTime},
+				#{regTime},
+				#{totalFee}
+		) 
+	]]>
+	</insert>
+	<select id="countTodayBind" parameterType="map" resultType="int">
+	<![CDATA[
+		select ifnull(count(*),0) todayNum from user_info where superGuid=#{superGuid} and appid=#{appid} and DATEDIFF(bindTime,now())=0
+	]]>
+	
+	</select>
+	<select id="countMothBind" parameterType="map" resultType="int">
+	<![CDATA[
+		select ifnull(count(*),0) todayNum from user_info where superGuid=#{superGuid} and appid=#{appid} and MONTH(bindTime)=MONTH(now())  
+	]]>
+	</select>
+	<select id="countAllBind" parameterType="map" resultType="int">
+	<![CDATA[
+		select ifnull(count(*),0) todayNum from user_info where superGuid=#{superGuid} and appid=#{appid} 
+	]]>
+	</select>
+	
+	<select id="getUsersBySuperGuid" parameterType="map" resultType="com.zhiyou.user.dto.UserInfoDto">
+		<![CDATA[
+		select * from user_info where superGuid=#{superGuid} and appid=#{appid} order by bindTime desc
+	]]>
+	</select>
+	
+	<select id="getUserInfoBySuperGuid" parameterType="map" resultType="com.zhiyou.user.dto.UserInfoDto">
+		<![CDATA[
+		select * from user_info where superGuid=#{superGuid} and appid=#{appid} and guid=#{guid} order by bindTime desc
+	]]>
+	</select>
+	
+	
+	<update id="update" parameterType="com.zhiyou.user.dto.UserInfoDto">
+	<![CDATA[
+		UPDATE user_info
+		SET 
+		  nickName=#{nickName},
+		  superGuid=#{superGuid},
+		  bindTime =#{bindTime}
+		  where guid = #{guid} and appid=#{appid};
+	]]>
+	</update>
+	
+		<update id="updateTotalFee" parameterType="map">
+	<![CDATA[
+		UPDATE user_info
+		SET 
+		  totalFee=totalFee+#{totalFee}
+		  where guid = #{guid} and appid=#{appid};
+	]]>
+	</update>
+	<delete id="delete" parameterType="com.zhiyou.user.dto.UserInfoDto">
+		<![CDATA[
+			DELETE FROM user_info
+			WHERE guid = #{guid} and appid=#{appid};
+		]]>
+	</delete>
+	
+	<select id="findForPage" parameterType="map" resultType="com.zhiyou.user.dto.UserInfoDto">
+	  SELECT * FROM  user_info
+	    <where>
+				<if test="guid != null and guid != ''"> and guid = #{guid} </if>
+				<if test="appid != null and appid !=0">and appid = #{appid} </if>
+				<if test="superGuid != null and superGuid != ''">and superGuid = #{superGuid} </if>
+				<if test=" nickName != null and  nickName != ''">and nickName like '%${nickName}%'</if>
+				<if test="bindTime != null and bindTime != '' ">
+					<![CDATA[AND DATE(bindTime) >= #{bindTime}]]>
+				</if>
+				<if test="regTime!= null and regTime != '' ">
+					<![CDATA[AND DATE(regTime) <= #{regTime}]]>
+				</if>
+			</where>
+				<![CDATA[ORDER BY regTime DESC]]>
+				<if test="startIndex != null and pageSize != null">LIMIT ${startIndex}, ${pageSize}</if>
+	</select>
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from user_info
+		  <where>
+				<if test="guid != null and guid != ''"> and guid = #{guid} </if>
+				<if test="appid != null and appid !=0"> and appid = #{appid} </if>
+				<if test="superGuid != null and superGuid != ''">and superGuid = #{superGuid} </if>
+				<if test=" nickName != null and  nickName != ''">and nickName like '%${nickName}%'</if>
+				<if test="bindTime != null and bindTime != '' ">
+					<![CDATA[AND DATE(bindTime) >= #{bindTime}]]>
+				</if>
+				<if test="regTime!= null and regTime != '' ">
+					<![CDATA[AND DATE(regTime) <= #{regTime}]]>
+				</if>
+			</where>
+	</select>
+	
+	<insert id="insertBindLog" parameterType="com.zhiyou.user.dto.UserBindLog">
+	<![CDATA[
+	insert into userbind_log(
+			    appid,
+				guid,
+				superGuid,
+				superLevel,
+				createTime
+		)VALUE(
+				#{appid},
+				#{guid},
+				#{superGuid},
+				#{superLevel},
+				#{createTime}
+		) 
+	]]>
+	</insert>
+	<select id="getDayBindNum" parameterType="map" resultType="int">
+		<![CDATA[
+	select count(*) num from userbind_log where appid=#{appid} and superGuid=#{superGuid} and superLevel=#{superLevel} and DATEDIFF(createTime,#{day})=0
+	]]>
+	</select>
+</mapper>

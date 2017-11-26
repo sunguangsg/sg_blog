@@ -1,0 +1,74 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	     <!-- 配置自动扫描的包 -->
+         <context:component-scan base-package="com.zhiyou.*.service.impl"/>
+         
+    <!-- 使用spring自带的占位符替换功能 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClass}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.user}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
+        <property name="initialPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
+        <property name="acquireIncrement" value="5" />
+        <property name="maxStatements" value="0" />
+        <property name="idleConnectionTestPeriod" value="60" />
+        <property name="acquireRetryAttempts" value="30" />
+        <property name="breakAfterAcquireFailure" value="true" />
+        <property name="testConnectionOnCheckout" value="false" />
+    </bean>
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.zhiyou.*.dao" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+    </bean>
+    
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+      
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception" read-only="false" />
+            <tx:method name="delete**" propagation="REQUIRED" rollback-for="java.lang.Exception" read-only="false" />
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception" read-only="false" />
+            <tx:method name="do*" propagation="REQUIRED" rollback-for="java.lang.Exception" read-only="false" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>                                        
+        <aop:pointcut id="txAop" expression="execution(* com.zhiyou.*.service.impl..*.*(..))" />
+        <aop:advisor pointcut-ref="txAop" advice-ref="txAdvice" />
+    </aop:config>
+  <import resource="classpath:spring/spring-shiro.xml"/> 
+</beans>

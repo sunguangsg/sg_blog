@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.analysis.dao.DailyAgentAnalysisDao">
+	<insert id="insertDailyAgentAnalysis" parameterType="com.zhiyou.analysis.dto.DailyAgentAnalysisDto">
+	<![CDATA[
+	 insert into daily_agent_analysis(
+		day,
+		appid,
+		guid,
+		tableNum,
+		bindNum,
+		income1,
+		income2,
+		income3,
+		useDiamond,
+		updateTime
+		)values(
+			#{day},
+			#{appid},
+			#{guid},
+			#{dau},
+			#{tableNum},
+			#{bindNum},
+			#{income1},
+			#{income2},
+			#{income3},
+			#{useDiamond},
+			#{updateTime}
+		);
+	]]>
+	</insert>
+	<select id="count" parameterType="map" resultType="int">
+	 <![CDATA[ select count(*) from daily_agent_analysis ]]>
+			<where>
+			    <if test="appid != null and appid != '' ">and appid = #{appid} </if>
+			    <if test="guid != null and guid != '' ">and guid = #{guid} </if>
+				<if test="startTime != null and startTime != '' ">
+					<![CDATA[and DATE(updateTime) >= #{startTime}]]>
+				</if>
+				<if test="endTime != null and endTime != '' ">
+					<![CDATA[and DATE(updateTime) <= #{endTime}]]>
+				</if>
+			</where>
+	</select>
+	
+		<select id="findForPage" parameterType="map" resultType="com.zhiyou.analysis.dto.DailyAgentAnalysisDto">
+	         <![CDATA[ select * from daily_agent_analysis ]]>
+			<where>
+			    <if test="appid != null and appid != '' ">and appid = #{appid} </if>
+			     <if test="guid != null and guid != '' ">and guid = #{guid} </if>
+			<if test="startTime != null and startTime != '' ">
+					<![CDATA[and DATE(updateTime) >= #{startTime}]]>
+				</if>
+				<if test="endTime != null and endTime != '' ">
+					<![CDATA[and DATE(updateTime) <= #{endTime}]]>
+				</if>
+			</where>
+			<![CDATA[ORDER BY updateTime DESC]]>
+			<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+	
+	
+	
+	<select id="getDailyAgentAnalysisDto" parameterType="map" resultType="com.zhiyou.analysis.dto.DailyAgentAnalysisDto">
+		<![CDATA[
+		select * from daily_agent_analysis where appid=#{appid} and day=#{day} and guid = #{guid}
+	   ]]>
+	</select>
+	
+<insert id="insertDailyAgentBindNum1" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_bind1_analysis (
+	day,
+	appid,
+	guid,
+	bindNum1,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	COUNT(*),
+	now()
+FROM
+userbind_log
+WHERE
+	superLevel = 1
+AND dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+<insert id="insertDailyAgentBindNum2" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_bind2_analysis (
+	day,
+	appid,
+	guid,
+	bindNum2,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	COUNT(*),
+	now()
+FROM
+userbind_log
+WHERE
+	superLevel = 2
+AND dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+<insert id="insertDailyAgentBindNum3" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_bind3_analysis (
+	day,
+	appid,
+	guid,
+	bindNum3,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	COUNT(*),
+	now()
+FROM
+userbind_log
+WHERE
+	superLevel = 3
+AND dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+<!--各级 代理分成每日统计 -->
+
+<insert id="insertDailyAgentIncome1" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_income1_analysis (
+	day,
+	appid,
+	guid,
+	income1,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	ifnull(sum(income),0),
+	now()
+FROM
+income_log
+WHERE userLevel=1
+and dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+<insert id="insertDailyAgentIncome2" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_income2_analysis (
+	day,
+	appid,
+	guid,
+	income2,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	ifnull(sum(income),0),
+	now()
+FROM
+income_log
+WHERE userLevel=2
+and dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+<insert id="insertDailyAgentIncome3" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_income3_analysis (
+	day,
+	appid,
+	guid,
+	income3,
+	updateTime
+) SELECT
+	 date_format(createTime, '%Y-%m-%d'),
+     appid,
+	superGuid,
+	ifnull(sum(income),0),
+	now()
+FROM
+income_log
+WHERE userLevel=3
+and dateDiff(
+	createTime,
+	#{day})=0
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+
+<insert id="insertDailyAgentTableAnalysis" parameterType="string">
+<![CDATA[
+INSERT INTO daily_agent_table_analysis (
+	day,
+	appid,
+	guid,
+	tableNum,
+	useDiamond,
+	updateTime
+) SELECT
+	 day,
+     appid,
+	superGuid,
+    COUNT(DISTINCT tableId),
+	SUM(useDiamond),
+	NOW()
+FROM
+table_info_log
+WHERE day=#{day}
+GROUP BY appid,superGuid
+]]>
+</insert>
+
+<select id="getDailyAgentBindOrIncome" parameterType="map" resultType="int" >
+<![CDATA[
+select IFNULL((sum(${filed})),0)AS sort from ${queryTab} where day=#{day} and appid=#{appid}
+]]>
+<if test="guid!=null and guid!=''"><![CDATA[ and guid=#{guid}]]></if>
+</select>
+<select id="getTodayUsedDiamond" parameterType="map" resultType="int">
+<![CDATA[
+select ifnull(sum(useDiamond),0) from table_info_log where appid=#{appid} and day=#{day}
+]]>
+<if test="superGuid!=null and superGuid!=''">and superGuid=#{superGuid}</if>
+</select>
+
+<select id="getTodayCountTable" parameterType="map" resultType="int">
+<![CDATA[ select  COUNT(DISTINCT tableId) from table_info_log where appid=#{appid} and day=#{day}]]>
+<if test="superGuid!=null and superGuid!=''">and superGuid=#{superGuid}</if>
+</select>
+
+<select id="getDailyAgentCountTableOrDiamonds" parameterType="map" resultType="int" >
+<![CDATA[ select ifnull(sum(${filed}),0) AS sort from daily_agent_table_analysis where appid=#{appid} and day=#{day}]]>
+<if test="guid!=null and guid!=''"><![CDATA[ and guid=#{guid}]]></if>
+</select>
+
+</mapper>

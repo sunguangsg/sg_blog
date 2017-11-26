@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.order.dao.IncomeLogDao">
+	<insert id="insert" parameterType="com.zhiyou.order.dto.IncomeLog" >
+		<![CDATA[
+			INSERT INTO income_log(
+			    orderid,
+				appid,
+				guid,
+			    superGuid,
+				userLevel,
+				income,
+				state,
+				totalFee,
+				createTime
+			)VALUES(
+				#{orderid},
+				#{appid},
+				#{guid},
+				#{superGuid},
+				#{userLevel},
+				#{income},
+				#{state},
+				#{totalFee},
+				#{createTime}
+			)
+		]]>
+	</insert>
+	
+	
+	<select id="countTodayIncome" parameterType="map" resultType="int">
+   <![CDATA[
+			select  
+			ifnull(sum(income) ,0) as income	 
+			from 
+			income_log
+			where
+			superGuid=#{superGuid} and appid=#{appid} and userLevel=#{userLevel} and DATEDIFF(createTime,#{day})=0
+		]]>
+</select>
+
+	<select id="findForPage" parameterType="map" resultType="com.zhiyou.order.dto.IncomeLog">
+	   <![CDATA[
+			SELECT  
+				 *
+			FROM income_log 
+		]]>
+		<where>
+		<if test="orderid!=null and orderid!=''">
+				<![CDATA[ and orderid=#{orderid}]]>
+		</if>
+		<if test="appid!=null and appid!=0">
+				<![CDATA[ and appid=#{appid} ]]>
+		</if>
+		<if test="userLevel!=null and userLevel!=''">
+				<![CDATA[ and userLevel=#{userLevel} ]]>
+		</if>
+		<if test="superGuid!=null and superGuid!=''">
+				<![CDATA[ and superGuid=#{superGuid} ]]>
+		</if>
+		<if test="guid!=null and guid!=''">
+				<![CDATA[ and guid=#{guid} ]]>
+		</if>
+	</where>
+	  <![CDATA[ORDER BY createTime DESC]]>
+	<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+
+	<select id="findTotalCount" parameterType="map" resultType="int">
+	SELECT
+	count(*)
+	FROM
+	income_log
+	<where>
+		<if test="orderid!=null and orderid!=''">
+				<![CDATA[ and orderid=#{orderid}]]>
+		</if>
+		<if test="appid!=null and appid!=0">
+				<![CDATA[ and appid=#{appid} ]]>
+		</if>
+		<if test="userLevel!=null and userLevel!=''">
+				<![CDATA[ and userLevel=#{userLevel} ]]>
+		</if>
+		<if test="superGuid!=null and superGuid!=''">
+				<![CDATA[ and superGuid=#{superGuid} ]]>
+		</if>
+		<if test="guid!=null and guid!=''">
+				<![CDATA[ and guid=#{guid} ]]>
+		</if>
+	</where>
+	
+	</select>
+	<select id="getIncomeByCondition" parameterType="map" resultType="com.zhiyou.order.dto.IncomeLog">
+	SELECT
+	*
+	FROM
+	income_log
+	<where>
+		<if test="orderid!=null and orderid!=''">
+		<![CDATA[	and orderid=#{orderid} ]]>
+		</if>
+		<if test="appid!=null and appid!=0">
+			<![CDATA[and appid=#{appid}]]>
+		</if>
+		<if test="userLevel!=null and userLevel!=''">
+				<![CDATA[ and userLevel=#{userLevel} ]]>
+		</if>
+		<if test="superGuid!=null and superGuid!=''">
+			<![CDATA[ and superGuid=#{superGuid} ]]>
+		</if>
+		<if test="guid!=null and guid!=''">
+			<![CDATA[and guid=#{guid} ]]>
+		</if>
+	</where>	
+	<![CDATA[order by createTime desc]]>
+		<if test="startIndex != null and pageSize != null">LIMIT #{startIndex}, #{pageSize}</if>
+	</select>
+	
+	<select id="countEverydayIncome" parameterType="map" resultType="com.zhiyou.order.dto.IncomeLog">
+		select 
+		sum(income)
+		from 
+		income_log
+		<where>
+			userLevel = 1 
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and DATE(createTime)=#{day}</if>
+		</where>
+	</select>
+	<select id="countEverydayIncomeT" parameterType="map" resultType="com.zhiyou.order.dto.IncomeLog">
+		select 
+		sum(income)
+		from 
+		income_log
+		<where>
+			userLevel = 2 
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and DATE(createTime)=#{day}</if>
+		</where>
+	</select>
+		<select id="countEverydayIncomeR" parameterType="map" resultType="com.zhiyou.order.dto.IncomeLog">
+		select 
+		sum(income)
+		from 
+		income_log
+		<where>
+			userLevel = 3
+		<if test="appid != null and appid !=''">and appid = #{appid} </if>
+		<if test="superGuid != null and superGuid!=''">and superGuid=#{superGuid}</if>
+		<if test="day!= null and day!=''">and DATE(createTime)=#{day}</if>
+		</where>
+	</select>
+</mapper>
